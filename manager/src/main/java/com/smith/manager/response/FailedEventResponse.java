@@ -1,5 +1,6 @@
 package com.smith.manager.response;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
 
 import java.io.Serializable;
