@@ -2,7 +2,6 @@ package com.smith.manager.config;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.smith.manager.controller.ManagerController;
 import com.smith.manager.entity.EventEntity;
 import com.smith.manager.entity.EventFailedEntity;
 import com.smith.manager.entity.TechnicalFailureEntity;

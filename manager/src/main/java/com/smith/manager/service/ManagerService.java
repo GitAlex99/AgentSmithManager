@@ -13,11 +13,16 @@ import com.smith.manager.response.TechnicalFailureResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.rsocket.RSocketProperties;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
+
+import static com.smith.manager.specification.EventSpecification.*;
 
 @Service
 public class ManagerService {
@@ -51,20 +56,21 @@ public class ManagerService {
         return eventList.stream().map(ManagerMapper::toResponse).toList();
     }
 
-    public List<EventResponse> getEvent(List<Long> ids) {
+    public List<EventResponse> getEvent(List<Long> ids, List<String> topics, long offsetFrom, long offsetTo, Timestamp sentAtFrom, Timestamp sentAtTo) {
         List<EventEntity> eventList = new LinkedList<>();
+        Specification<EventEntity> specEvent = Specification
+                .allOf(
+                        ids(ids),
+                        topics(topics),
+                        offset(offsetFrom,offsetTo),
+                        sentAt(sentAtFrom, sentAtTo)
+                        );
 
         logger.info("Extraction started");
 
-        if (CollectionUtils.isEmpty(ids)) {
-            logger.info("Extracting all failed events");
+        logger.info("Extracting all events");
 
-            eventList = eventRepository.findAll();
-        } else {
-            logger.info("Extracting failed events with ids: {}", ids);
-
-            eventList = eventRepository.findAllById(ids);
-        }
+        eventList = eventRepository.findAll(specEvent);
 
         return eventList.stream().map(ManagerMapper::toResponse).toList();
     }
