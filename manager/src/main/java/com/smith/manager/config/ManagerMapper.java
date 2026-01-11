@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smith.manager.entity.EventEntity;
 import com.smith.manager.entity.EventFailedEntity;
 import com.smith.manager.entity.TechnicalFailureEntity;
+import com.smith.manager.model.EventType;
 import com.smith.manager.response.EventResponse;
 import com.smith.manager.response.FailedEventResponse;
 import com.smith.manager.response.TechnicalFailureResponse;
@@ -41,7 +42,7 @@ public class ManagerMapper {
 
         EventResponse response = new EventResponse();
         response.setId(entity.getId_event());
-        response.setType(entity.getType());
+        response.setType(EventType.valueOf(entity.getType()));
         response.setSource(entity.getSource());
         response.setSeverity(entity.getSeverity());
         response.setPayload(entity.getPayload());

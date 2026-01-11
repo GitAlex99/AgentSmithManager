@@ -1,5 +1,6 @@
 package com.smith.manager.controller;
 
+import com.smith.manager.model.EventType;
 import com.smith.manager.response.EventResponse;
 import com.smith.manager.response.FailedEventResponse;
 import com.smith.manager.response.TechnicalFailureResponse;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/event")
@@ -35,19 +37,19 @@ public class ManagerController {
     }
 
     @GetMapping()
-    public List<EventResponse> getEvent(@RequestParam(required = false) List<Long> ids,
-                                        @RequestParam(required = false) List<String> topics,
-                                        @RequestParam(required = false) long offsetFrom,
-                                        @RequestParam(required = false) long offsetTo,
+    public List<EventResponse> getEvent(@RequestParam(required = false) List<UUID> ids,
+                                        @RequestParam(required = false) List<EventType> type,
+                                        @RequestParam(required = false) List<String> severity,
+                                        @RequestParam(required = false) List<UUID> clientId,
                                         @RequestParam(required = false) Timestamp sentAtFrom,
                                         @RequestParam(required = false) Timestamp sentAtTo){
         logger.info("Starting get event api");
 
         List<EventResponse> response = managerService.getEvent(
                 ids,
-                topics,
-                offsetFrom,
-                offsetTo,
+                type,
+                severity,
+                clientId,
                 sentAtFrom,
                 sentAtTo
         );

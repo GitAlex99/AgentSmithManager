@@ -7,6 +7,7 @@ import com.smith.manager.config.ManagerMapper;
 import com.smith.manager.entity.EventEntity;
 import com.smith.manager.entity.EventFailedEntity;
 import com.smith.manager.entity.TechnicalFailureEntity;
+import com.smith.manager.model.EventType;
 import com.smith.manager.response.EventResponse;
 import com.smith.manager.response.FailedEventResponse;
 import com.smith.manager.response.TechnicalFailureResponse;
@@ -21,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import static com.smith.manager.specification.EventSpecification.*;
 
@@ -56,13 +58,14 @@ public class ManagerService {
         return eventList.stream().map(ManagerMapper::toResponse).toList();
     }
 
-    public List<EventResponse> getEvent(List<Long> ids, List<String> topics, long offsetFrom, long offsetTo, Timestamp sentAtFrom, Timestamp sentAtTo) {
+    public List<EventResponse> getEvent(List<UUID> ids, List<EventType> type, List<String> severity, List<UUID> clientId, Timestamp sentAtFrom, Timestamp sentAtTo) {
         List<EventEntity> eventList = new LinkedList<>();
         Specification<EventEntity> specEvent = Specification
                 .allOf(
                         ids(ids),
-                        topics(topics),
-                        offset(offsetFrom,offsetTo),
+                        severity(severity),
+                        type(type),
+                        clientId(clientId),
                         sentAt(sentAtFrom, sentAtTo)
                         );
 

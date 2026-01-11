@@ -15,7 +15,7 @@ public class EventEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private UUID id_event;
-    private EventType type;
+    private String type;
     private String source;
     private String severity;
     private String payload;

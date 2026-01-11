@@ -1,15 +1,18 @@
 package com.smith.manager.specification;
 
 import com.smith.manager.entity.EventEntity;
+import com.smith.manager.model.EventType;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.CollectionUtils;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class EventSpecification {
 
-    public static Specification<EventEntity> ids(List<Long> ids){
+    public static Specification<EventEntity> ids(List<UUID> ids){
         return ((root, query, criteriaBuilder) -> {
             if(CollectionUtils.isEmpty(ids))
                 return criteriaBuilder.conjunction();
@@ -25,6 +28,30 @@ public class EventSpecification {
         });
     }
 
+    public static Specification<EventEntity> severity(List<String> severity){
+        return ((root, query, criteriaBuilder) -> {
+            if(CollectionUtils.isEmpty(severity))
+                return criteriaBuilder.conjunction();
+            return root.get("severity").in(severity);
+        });
+    }
+
+    public static Specification<EventEntity> type(List<EventType> type){
+        return ((root, query, criteriaBuilder) -> {
+            if(CollectionUtils.isEmpty(type))
+                return criteriaBuilder.conjunction();
+            List<String> filter = type.stream().map(Enum::toString).toList();
+            return root.get("type").in(filter);
+        });
+    }
+    public static Specification<EventEntity> clientId(List<UUID> clientId){
+        return ((root, query, criteriaBuilder) -> {
+            if(CollectionUtils.isEmpty(clientId))
+                return criteriaBuilder.conjunction();
+            return root.get("clientId").in(clientId);
+        });
+    }
+
     public static Specification<EventEntity> minOffset(long offset){
         return (((root, query, criteriaBuilder) -> {
             if(offset==-1)
@@ -33,13 +60,15 @@ public class EventSpecification {
         }));
     }
 
-    public static Specification<EventEntity> offset(long offsetFrom, long offsetTO){
+    public static Specification<EventEntity> offset(Long offsetFrom, Long offsetTO){
         return (((root, query, criteriaBuilder) -> {
-            if(offsetFrom == -1 && offsetTO == -1)
+            if(offsetFrom == null && offsetTO == null)
                 return criteriaBuilder.conjunction();
-            else if(offsetFrom == -1 && offsetTO != -1)
+            else if(offsetFrom == null && offsetTO != null)
                 return criteriaBuilder.lessThanOrEqualTo(root.get("kafka_offset"),offsetTO);
-            return criteriaBuilder.greaterThanOrEqualTo(root.get("kafka_offset"),offsetFrom);
+            else if(offsetFrom != null && offsetTO == null)
+                return criteriaBuilder.greaterThanOrEqualTo(root.get("kafka_offset"),offsetFrom);
+            return criteriaBuilder.between(root.get("kafka_offset"),offsetFrom,offsetTO);
         }));
     }
 
