@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.smith.manager.specification.EventSpecification.*;
+import static com.smith.manager.specification.TechnicalFailureSpecification.*;
 
 @Service
 public class ManagerService {
@@ -78,12 +79,17 @@ public class ManagerService {
         return eventList.stream().map(ManagerMapper::toResponse).toList();
     }
 
-    public List<TechnicalFailureResponse> getTechnicalFailure() {
+    public List<TechnicalFailureResponse> getTechnicalFailure(String topic, Long offsetFrom, Long offsetTo) {
         logger.info("Extraction started");
+
+        Specification<TechnicalFailureEntity> spec = Specification.allOf(
+                topicTechFailure(topic),
+                offsetTechFailure(offsetFrom,offsetTo)
+        );
 
         logger.info("Extracting all failed events");
 
-        List<TechnicalFailureEntity> failureList = technicalRepository.findAll();
+        List<TechnicalFailureEntity> failureList = technicalRepository.findAll(spec);
 
         return failureList.stream().map(ManagerMapper::toResponse).toList();
     }

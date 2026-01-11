@@ -60,10 +60,12 @@ public class ManagerController {
     }
 
     @GetMapping("/technicalFailure")
-    public List<TechnicalFailureResponse> getTechnicalFailure(){
+    public List<TechnicalFailureResponse> getTechnicalFailure(@RequestParam(required = false) String topic,
+                                                              @RequestParam(required = false) Long offsetFrom,
+                                                              @RequestParam(required = false) Long offsetTo){
         logger.info("Starting get technical failure api");
 
-        List<TechnicalFailureResponse> response = managerService.getTechnicalFailure();
+        List<TechnicalFailureResponse> response = managerService.getTechnicalFailure(topic,offsetFrom,offsetTo);
 
         logger.info("Ending get technical failure api");
 

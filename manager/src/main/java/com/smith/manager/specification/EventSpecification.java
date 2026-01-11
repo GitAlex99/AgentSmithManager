@@ -6,7 +6,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.CollectionUtils;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,15 +59,15 @@ public class EventSpecification {
         }));
     }
 
-    public static Specification<EventEntity> offset(Long offsetFrom, Long offsetTO){
+    public static Specification<EventEntity> offset(Long offsetFrom, Long offsetTo){
         return (((root, query, criteriaBuilder) -> {
-            if(offsetFrom == null && offsetTO == null)
+            if(offsetFrom == null && offsetTo == null)
                 return criteriaBuilder.conjunction();
-            else if(offsetFrom == null && offsetTO != null)
-                return criteriaBuilder.lessThanOrEqualTo(root.get("kafka_offset"),offsetTO);
-            else if(offsetFrom != null && offsetTO == null)
+            else if(offsetFrom == null && offsetTo != null)
+                return criteriaBuilder.lessThanOrEqualTo(root.get("kafka_offset"),offsetTo);
+            else if(offsetFrom != null && offsetTo == null)
                 return criteriaBuilder.greaterThanOrEqualTo(root.get("kafka_offset"),offsetFrom);
-            return criteriaBuilder.between(root.get("kafka_offset"),offsetFrom,offsetTO);
+            return criteriaBuilder.between(root.get("kafka_offset"),offsetFrom,offsetTo);
         }));
     }
 
