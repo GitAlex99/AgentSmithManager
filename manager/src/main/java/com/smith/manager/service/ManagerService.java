@@ -3,11 +3,14 @@ package com.smith.manager.service;
 import com.smith.manager.DAO.EventFailedRepository;
 import com.smith.manager.DAO.EventRepository;
 import com.smith.manager.DAO.TechnicalFailureRepository;
+import com.smith.manager.client.IngestionClient;
 import com.smith.manager.config.ManagerMapper;
+import com.smith.manager.dto.SendEventDTO;
 import com.smith.manager.entity.EventEntity;
 import com.smith.manager.entity.EventFailedEntity;
 import com.smith.manager.entity.TechnicalFailureEntity;
 import com.smith.manager.model.EventType;
+import com.smith.manager.request.EventRequest;
 import com.smith.manager.response.EventResponse;
 import com.smith.manager.response.FailedEventResponse;
 import com.smith.manager.response.TechnicalFailureResponse;
@@ -37,6 +40,9 @@ public class ManagerService {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private IngestionClient ingestionClient;
 
     @Autowired
     private TechnicalFailureRepository technicalRepository;
@@ -92,5 +98,16 @@ public class ManagerService {
         List<TechnicalFailureEntity> failureList = technicalRepository.findAll(spec);
 
         return failureList.stream().map(ManagerMapper::toResponse).toList();
+    }
+
+    public void sendEvent(EventRequest eventRequest){
+        logger.info("START send event method in Manager Service");
+
+        SendEventDTO dto = ManagerMapper.toDTO(eventRequest);
+
+        ingestionClient.sendEvent(dto);
+
+        logger.info("END send event method in Manager Service");
+
     }
 }

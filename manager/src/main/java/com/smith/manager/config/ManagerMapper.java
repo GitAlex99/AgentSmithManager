@@ -2,10 +2,12 @@ package com.smith.manager.config;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.smith.manager.dto.SendEventDTO;
 import com.smith.manager.entity.EventEntity;
 import com.smith.manager.entity.EventFailedEntity;
 import com.smith.manager.entity.TechnicalFailureEntity;
 import com.smith.manager.model.EventType;
+import com.smith.manager.request.EventRequest;
 import com.smith.manager.response.EventResponse;
 import com.smith.manager.response.FailedEventResponse;
 import com.smith.manager.response.TechnicalFailureResponse;
@@ -70,5 +72,17 @@ public class ManagerMapper {
             logger.error("Error during mapping of raw event");
         }
         return response;
+    }
+
+    public static SendEventDTO toDTO(EventRequest event){
+
+        SendEventDTO sendEventDTO = new SendEventDTO();
+        sendEventDTO.setType(event.getType());
+        sendEventDTO.setSource(event.getSource());
+        sendEventDTO.setPayload(event.getPayload());
+        sendEventDTO.setTimestamp(event.getTimestamp());
+        sendEventDTO.setClientId(event.getClientId());
+
+        return sendEventDTO;
     }
 }

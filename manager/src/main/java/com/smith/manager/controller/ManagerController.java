@@ -1,17 +1,17 @@
 package com.smith.manager.controller;
 
 import com.smith.manager.model.EventType;
+import com.smith.manager.request.EventRequest;
 import com.smith.manager.response.EventResponse;
 import com.smith.manager.response.FailedEventResponse;
 import com.smith.manager.response.TechnicalFailureResponse;
 import com.smith.manager.service.ManagerService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -34,6 +34,17 @@ public class ManagerController {
         logger.info("Ending get failed event api");
 
         return response;
+    }
+
+    @PostMapping("")
+    public ResponseEntity<Void> sendEvent(@Valid @RequestBody EventRequest request){
+        logger.info("Starting sendEvent api");
+
+        managerService.sendEvent(request);
+
+        logger.info("Ending sendEvent api");
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping()
